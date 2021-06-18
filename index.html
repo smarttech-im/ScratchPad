@@ -32,12 +32,58 @@
             -moz-box-sizing: border-box;
             box-sizing: border-box;
         }
+
+        #history, a {
+            padding: 0.5em 1em 0.5em 1em;
+            background-color: #a59999;
+            border-radius: 5px;
+            border-color: #a59999;
+            cursor: pointer;
+        }
+
+        #restore {
+            padding: 0.1em 1em 0.2em 1em;
+        }
     </style>
 </head>
 <body>
     <div class="content">
         <h1>Scratch Pad</h1>
-        <textarea cols="100"></textarea>
+        <textarea cols="100" id="text"></textarea>
+        <select id="history"></select>
+        <a id="restore">Restore</a>
     </div>
+
+    <script>
+
+        const date = new Date();
+        const dateStr = 
+            date.getFullYear().toString() + '-' + 
+            ('0' + (date.getMonth() + 1).toString()).slice(-2) + '-' +
+            date.getDate().toString();
+
+
+        document.getElementById('text').onchange = function () {
+            localStorage.setItem(dateStr, this.value);
+        }
+
+
+        document.getElementById('restore').onclick = function () {
+            let selectedValue = document.getElementById('history').selectedOptions[0].value;
+            let archivedText = localStorage.getItem(selectedValue);
+            archivedText = '\n----------------- Restored from ' + selectedValue + ' -----------------\n' + archivedText;
+            document.getElementById('text').innerHTML += archivedText;
+        }
+
+        
+        let optionList = '';
+        for (var keyID in Object.keys(localStorage)){
+            const key = Object.keys(localStorage)[keyID];
+            const option = '<option value="' + key + '">' + key + '</option>'; Object.keys(localStorage)[key];
+            optionList += option;
+        }
+        document.getElementById('history').innerHTML = optionList;
+
+    </script>
 </body>
 </html>
